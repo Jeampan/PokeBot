@@ -189,7 +189,7 @@ namespace PokemonGo.RocketAPI.Console
                 return _shitPokemonsToTransfer;
             }
         }
-    }
+    
 
     //Do not catch those
     public ICollection<PokemonId> PokemonsNotToCatch
