@@ -12,10 +12,10 @@
       <Value Profile="(Default)">pw</Value>
     </Setting>
     <Setting Name="DefaultLatitude" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">51.570586</Value>
+      <Value Profile="(Default)">51.529945505171582</Value>
     </Setting>
     <Setting Name="DefaultLongitude" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">-0.1272122</Value>
+      <Value Profile="(Default)">-0.15501022338867188</Value>
     </Setting>
     <Setting Name="DefaultAltitude" Type="System.Double" Scope="User">
       <Value Profile="(Default)">10</Value>
@@ -27,7 +27,7 @@
       <Value Profile="(Default)">300</Value>
     </Setting>
     <Setting Name="WalkingSpeedInKilometerPerHour" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">6</Value>
+      <Value Profile="(Default)">12</Value>
     </Setting>
     <Setting Name="EvolveAllPokemonWithEnoughCandy" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

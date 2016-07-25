@@ -29,6 +29,7 @@ namespace PokemonGo.RocketAPI.Logic
         private readonly Statistics _stats;
         private GetPlayerResponse _playerProfile;
         private Narrator _narrator;
+        private List<PokemonData> _caughtInSession;
 
         public Logic(ISettings clientSettings)
         {
@@ -39,6 +40,7 @@ namespace PokemonGo.RocketAPI.Logic
             _navigation = new Navigation(_client);
             _stats = new Statistics();
             _narrator = new Narrator(clientSettings.NarratorVolume, clientSettings.NarratorSpeed);
+            _caughtInSession = new List<PokemonData>();
         }
 
         /// <summary>
@@ -134,6 +136,7 @@ namespace PokemonGo.RocketAPI.Logic
 
                     if (caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchSuccess)
                     {
+                        _caughtInSession.Add(encounter.WildPokemon?.PokemonData);
                         _narrator.Speak($"{pokemon.PokemonId}, {encounter.WildPokemon?.PokemonData?.Cp}");
                     }
 
@@ -144,22 +147,28 @@ namespace PokemonGo.RocketAPI.Logic
                      caughtPokemonResponse.Status == CatchPokemonResponse.Types.CatchStatus.CatchEscape);
         }
 
-        private async Task DisplayHighests()
+        private async Task DisplayHighest(int NumberToShow = 10, List<PokemonData> PokemonSession = null)
         {
-            Logger.Write("====== DisplayHighestsCP ======", LogLevel.Info, ConsoleColor.Yellow);
-            var highestsPokemonCp = await _inventory.GetHighestsCp(20);
+            Logger.Write("====== Highest CP ======", LogLevel.Info, ConsoleColor.Yellow);
+            var highestsPokemonCp = await _inventory.GetHighestsCp(NumberToShow, PokemonSession);
             foreach (var pokemon in highestsPokemonCp)
                 Logger.Write(
                     $"# CP {pokemon.Cp.ToString().PadLeft(4, ' ')}/{PokemonInfo.CalculateMaxCP(pokemon).ToString().PadLeft(4, ' ')} | ({PokemonInfo.CalculatePokemonPerfection(pokemon).ToString("0.00")}% perfect)\t| Lvl {PokemonInfo.GetLevel(pokemon).ToString("00")}\t NAME: '{pokemon.PokemonId}'",
                     LogLevel.Info, ConsoleColor.Yellow);
-            Logger.Write("====== DisplayHighestsPerfect ======", LogLevel.Info, ConsoleColor.Yellow);
-            var highestsPokemonPerfect = await _inventory.GetHighestsPerfect(10);
+            Logger.Write("====== Highest Perfect ======", LogLevel.Info, ConsoleColor.Yellow);
+            var highestsPokemonPerfect = await _inventory.GetHighestsPerfect(NumberToShow, PokemonSession);
             foreach (var pokemon in highestsPokemonPerfect)
             {
                 Logger.Write(
                     $"# CP {pokemon.Cp.ToString().PadLeft(4, ' ')}/{PokemonInfo.CalculateMaxCP(pokemon).ToString().PadLeft(4, ' ')} | ({PokemonInfo.CalculatePokemonPerfection(pokemon).ToString("0.00")}% perfect)\t| Lvl {PokemonInfo.GetLevel(pokemon).ToString("00")}\t NAME: '{pokemon.PokemonId}'",
                     LogLevel.Info, ConsoleColor.Yellow);
             }
+        }
+
+        private async void DisplaySummary(object StateInfo)
+        {
+            await DisplayHighest(3, _caughtInSession);
+            
         }
 
         private async Task EvolveAllPokemonWithEnoughCandy(IEnumerable<PokemonId> filter = null)
@@ -678,9 +687,14 @@ namespace PokemonGo.RocketAPI.Logic
                     await TransferDuplicatePokemon();
                 }
 
-                await DisplayHighests();
+                await DisplayHighest();
                 _stats.UpdateConsoleTitle(_inventory);
                 await RecycleItems();
+
+                TimerCallback callback = new TimerCallback(DisplaySummary);
+
+                var summaryTimer = new Timer(callback,null,120000,120000);
+
                 await ExecuteFarmingPokestopsAndPokemons(_clientSettings.UseGPXPathing);
 
                 /*

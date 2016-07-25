@@ -157,16 +157,16 @@ namespace PokemonGo.RocketAPI.Logic
                 .FirstOrDefault();
         }
 
-        public async Task<IEnumerable<PokemonData>> GetHighestsCp(int limit)
+        public async Task<IEnumerable<PokemonData>> GetHighestsCp(int limit, List<PokemonData> SessionPokemon = null)
         {
-            var myPokemon = await GetPokemons();
+            var myPokemon = SessionPokemon ?? await GetPokemons();
             var pokemons = myPokemon.ToList();
             return pokemons.OrderByDescending(x => x.Cp).ThenBy(n => n.StaminaMax).Take(limit);
         }
 
-        public async Task<IEnumerable<PokemonData>> GetHighestsPerfect(int limit)
+        public async Task<IEnumerable<PokemonData>> GetHighestsPerfect(int limit, List<PokemonData> SessionPokemon = null)
         {
-            var myPokemon = await GetPokemons();
+            var myPokemon = SessionPokemon ?? await GetPokemons();
             var pokemons = myPokemon.ToList();
             return pokemons.OrderByDescending(PokemonInfo.CalculatePokemonPerfection).Take(limit);
         }
