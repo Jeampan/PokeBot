@@ -39,6 +39,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Speech" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -57,6 +58,11 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>UserSettings.settings</DependentUpon>
     </Compile>
+    <Compile Include="UserSettings1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>UserSettings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -65,7 +71,7 @@
     <None Include="packages.config" />
     <None Include="UserSettings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>UserSettings.Designer.cs</LastGenOutput>
+      <LastGenOutput>UserSettings1.Designer.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

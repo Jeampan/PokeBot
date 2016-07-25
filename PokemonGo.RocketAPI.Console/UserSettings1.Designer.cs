@@ -121,7 +121,7 @@ namespace PokemonGo.RocketAPI.Console {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        [global::System.Configuration.DefaultSettingValueAttribute("6")]
         public double WalkingSpeedInKilometerPerHour {
             get {
                 return ((double)(this["WalkingSpeedInKilometerPerHour"]));

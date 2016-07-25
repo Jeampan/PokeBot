@@ -39,6 +39,16 @@ namespace PokemonGo.RocketAPI.Console
         public bool useLuckyEggsWhileEvolving => UserSettings.Default.useLuckyEggsWhileEvolving;
         public bool EvolveAllPokemonAboveIV => UserSettings.Default.EvolveAllPokemonAboveIV;
         public float EvolveAboveIVValue => UserSettings.Default.EvolveAboveIVValue;
+        public bool RecycleItems => UserSettings.Default.RecycleItems;
+
+        public bool DontCatchPokemon
+        {
+            get { return UserSettings.Default.DontCatchPokemon; }
+            set { UserSettings.Default.DontCatchPokemon = value; }
+        }
+
+        public int NarratorVolume => UserSettings.Default.NarratorVolume;
+        public int NarratorSpeed => UserSettings.Default.NarratorSpeed;
 
         //Type and amount to keep
         public ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter

@@ -24,13 +24,17 @@ namespace PokemonGo.RocketAPI
         int DelayBetweenPokemonCatch { get; }
         bool UsePokemonToNotCatchFilter { get; }
         int KeepMinDuplicatePokemon { get; }
-        bool PrioritizeIVOverCP {get; }
+        bool PrioritizeIVOverCP { get; }
         int MaxTravelDistanceInMeters { get; }
         bool UseGPXPathing { get; }
         string GPXFile { get; }
         bool useLuckyEggsWhileEvolving { get; }
         bool EvolveAllPokemonAboveIV { get; }
         float EvolveAboveIVValue { get; }
+        bool RecycleItems { get; }
+        bool DontCatchPokemon { get; set; }
+        int NarratorVolume { get; }
+        int NarratorSpeed { get; }
 
         ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; }
 
