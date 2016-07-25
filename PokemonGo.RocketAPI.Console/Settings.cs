@@ -14,6 +14,7 @@ namespace PokemonGo.RocketAPI.Console
     public class Settings : ISettings
     {
         private ICollection<PokemonId> _pokemonsNotToTransfer;
+        private ICollection<PokemonId> _shitPokemonsToTransfer;
         private ICollection<PokemonId> _pokemonsToEvolve;
         private ICollection<PokemonId> _pokemonsNotToCatch;
         private ICollection<KeyValuePair<ItemId, int>> _itemRecycleFilter;
@@ -46,6 +47,8 @@ namespace PokemonGo.RocketAPI.Console
             get { return UserSettings.Default.DontCatchPokemon; }
             set { UserSettings.Default.DontCatchPokemon = value; }
         }
+
+        public bool OnlyTransferDuplicateShit => UserSettings.Default.OnlyTransferDuplicateShit;
 
         public int NarratorVolume => UserSettings.Default.NarratorVolume;
         public int NarratorSpeed => UserSettings.Default.NarratorSpeed;
@@ -174,8 +177,22 @@ namespace PokemonGo.RocketAPI.Console
             }
         }
 
-        //Do not catch those
-        public ICollection<PokemonId> PokemonsNotToCatch
+        public ICollection<PokemonId> ShitPokemonsToTransfer
+        {
+            get
+            {
+                //Type of to transfer
+                List<PokemonId> defaultPokemon = new List<PokemonId> {
+                    PokemonId.Pidgey, PokemonId.Rattata, PokemonId.Spearow, PokemonId.Magikarp, PokemonId.Zubat, PokemonId.Poliwag, PokemonId.Drowzee, PokemonId.Krabby
+                };
+                _shitPokemonsToTransfer = _shitPokemonsToTransfer ?? LoadPokemonList("Configs\\ConfigShitPokemonsToTransfer.ini", defaultPokemon);
+                return _shitPokemonsToTransfer;
+            }
+        }
+    }
+
+    //Do not catch those
+    public ICollection<PokemonId> PokemonsNotToCatch
         {
             get
             {

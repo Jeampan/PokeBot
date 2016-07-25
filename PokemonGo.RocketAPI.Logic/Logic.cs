@@ -732,16 +732,29 @@ namespace PokemonGo.RocketAPI.Logic
 
         private async Task TransferDuplicatePokemon(bool keepPokemonsThatCanEvolve = false)
         {
-            if (!_clientSettings.TransferDuplicatePokemon)
+            IEnumerable<PokemonData> duplicatePokemons;
+
+            if (!_clientSettings.TransferDuplicatePokemon && !_clientSettings.OnlyTransferDuplicateShit)
             {
                 Logger.Write("Not Transferring Duplicates", LogLevel.Info);
                 return;
             }
+            else if (_clientSettings.OnlyTransferDuplicateShit)
+            {
 
-            var duplicatePokemons =
-                await
-                    _inventory.GetDuplicatePokemonToTransfer(keepPokemonsThatCanEvolve,
-                        _clientSettings.PrioritizeIVOverCP, _clientSettings.PokemonsNotToTransfer);
+                duplicatePokemons =
+                    await
+                        _inventory.GetDuplicatePokemonToTransfer(keepPokemonsThatCanEvolve,
+                            _clientSettings.PrioritizeIVOverCP, _clientSettings.ShitPokemonsToTransfer, true);
+
+            }
+            else
+            {
+                duplicatePokemons =
+                    await
+                        _inventory.GetDuplicatePokemonToTransfer(keepPokemonsThatCanEvolve,
+                            _clientSettings.PrioritizeIVOverCP, _clientSettings.PokemonsNotToTransfer);
+            }
 
             foreach (var duplicatePokemon in duplicatePokemons)
             {

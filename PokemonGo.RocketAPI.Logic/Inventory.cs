@@ -57,17 +57,22 @@ namespace PokemonGo.RocketAPI.Logic
 
         public async Task<IEnumerable<PokemonData>> GetDuplicatePokemonToTransfer(
             bool keepPokemonsThatCanEvolve = false, bool prioritizeIVoverCp = false,
-            IEnumerable<PokemonId> filter = null)
+            IEnumerable<PokemonId> filter = null, bool WhereInList = false)
         {
             var myPokemon = await GetPokemons();
 
             var pokemonList =
                 myPokemon.Where(p => p.DeployedFortId == 0 && p.Favorite == 0 && p.Cp < _client.Settings.KeepMinCP)
                     .ToList();
-            if (filter != null)
+            if (filter != null && WhereInList)
+            {
+                pokemonList = pokemonList.Where(p => filter.Contains(p.PokemonId)).ToList();
+            }
+            else if(filter != null && !WhereInList)
             {
                 pokemonList = pokemonList.Where(p => !filter.Contains(p.PokemonId)).ToList();
             }
+
             if (keepPokemonsThatCanEvolve)
             {
                 var results = new List<PokemonData>();

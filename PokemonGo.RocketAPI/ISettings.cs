@@ -35,6 +35,7 @@ namespace PokemonGo.RocketAPI
         bool DontCatchPokemon { get; set; }
         int NarratorVolume { get; }
         int NarratorSpeed { get; }
+        bool OnlyTransferDuplicateShit { get; }
 
         ICollection<KeyValuePair<ItemId, int>> ItemRecycleFilter { get; }
 
@@ -43,5 +44,7 @@ namespace PokemonGo.RocketAPI
         ICollection<PokemonId> PokemonsNotToTransfer { get; }
 
         ICollection<PokemonId> PokemonsNotToCatch { get; }
+        ICollection<PokemonId> ShitPokemonsToTransfer { get; }
+
     }
 }
