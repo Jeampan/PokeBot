@@ -25,6 +25,8 @@ namespace PokemonGo.RocketAPI.Logic.Utils
         public static DateTime InitSessionDateTime = DateTime.Now;
         public static TimeSpan Duration = DateTime.Now - InitSessionDateTime;
 
+        public static int KeptPokemon;
+
         public static async Task<string> _getcurrentLevelInfos(Inventory inventory)
         {
             var stats = await inventory.GetPlayerStats();
