@@ -13,6 +13,8 @@ using PokemonGo.RocketAPI.GeneratedCode;
 using PokemonGo.RocketAPI.Helpers;
 using PokemonGo.RocketAPI.Login;
 using static PokemonGo.RocketAPI.GeneratedCode.Response.Types;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 #endregion
 
@@ -25,11 +27,12 @@ namespace PokemonGo.RocketAPI
         private AuthType _authType = AuthType.Google;
         private Request.Types.UnknownAuth _unknownAuth;
         Random rand = null;
+        private GMapControl _map;
 
-        public Client(ISettings settings)
+        public Client(ISettings settings, GMapControl map)
         {
             Settings = settings;
-
+            _map = map;
             DirectoryInfo di = Directory.CreateDirectory(Directory.GetCurrentDirectory() + "\\Configs");
 
             Tuple<double, double> latLngFromFile = GetLatLngFromFile();
@@ -286,8 +289,32 @@ namespace PokemonGo.RocketAPI
                         }.ToByteString()
                 });
 
-            return
-                await _httpClient.PostProtoPayload<Request, GetMapObjectsResponse>($"https://{_apiUrl}/rpc", mapRequest);
+            var response = await _httpClient.PostProtoPayload<Request, GetMapObjectsResponse>($"https://{_apiUrl}/rpc", mapRequest);
+
+            var mapPointOverlay = _map.Overlays[1];
+            mapPointOverlay.Markers.Clear();
+
+            foreach (var mapPoint in response.MapCells)
+            {
+                foreach (var fort in mapPoint.Forts)
+                {
+                    if (fort.Type == FortType.Checkpoint)
+                    {
+                        mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(fort.Latitude, fort.Longitude),
+                GMarkerGoogleType.blue));
+                    }
+                }
+
+                foreach (var pokemon in mapPoint.WildPokemons)
+                {
+                    mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(pokemon.Latitude, pokemon.Longitude),
+                GMarkerGoogleType.red));
+                }
+
+
+            }         
+
+            return response;
         }
 
         public async Task<GetPlayerResponse> GetProfile()
@@ -464,6 +491,10 @@ namespace PokemonGo.RocketAPI
             var updateResponse =
                 await
                     _httpClient.PostProtoPayload<Request, PlayerUpdateResponse>($"https://{_apiUrl}/rpc", updateRequest);
+
+            var userOverlay = _map.Overlays[2];
+            userOverlay.Markers[0].Position = new GMap.NET.PointLatLng(CurrentLat, CurrentLng);
+
             return updateResponse;
         }
 

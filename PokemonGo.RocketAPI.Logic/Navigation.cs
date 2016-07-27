@@ -40,6 +40,7 @@ namespace PokemonGo.RocketAPI.Logic
                 await
                     _client.UpdatePlayerLocation(waypoint.Latitude, waypoint.Longitude, _client.Settings.DefaultAltitude);
 
+
             do
             {
                 var millisecondsUntilGetUpdatePlayerLocationResponse =

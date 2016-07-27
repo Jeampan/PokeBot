@@ -15,6 +15,7 @@ using PokemonGo.RocketAPI.Logic.Utils;
 // ReSharper disable CyclomaticComplexity
 // ReSharper disable FunctionNeverReturns
 using System.IO;
+using GMap.NET.WindowsForms;
 
 #endregion
 
@@ -31,11 +32,11 @@ namespace PokemonGo.RocketAPI.Logic
         private Narrator _narrator;
         private List<PokemonData> _caughtInSession;
 
-        public Logic(ISettings clientSettings)
+        public Logic(ISettings clientSettings, GMapControl map)
         {
             _clientSettings = clientSettings;
             ResetCoords();
-            _client = new Client(_clientSettings);
+            _client = new Client(_clientSettings, map);
             _inventory = new Inventory(_client);
             _navigation = new Navigation(_client);
             _stats = new Statistics();

@@ -5,13 +5,14 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using PokemonGo.RocketAPI.GeneratedCode;
+using System.Windows.Forms;
 // ReSharper disable CyclomaticComplexity
 
 #endregion
 
 namespace PokemonGo.RocketAPI.Logic.Utils
 {
-    internal class Statistics
+    public class Statistics
     {
         public static int TotalExperience;
         public static int TotalPokemons;
@@ -26,6 +27,8 @@ namespace PokemonGo.RocketAPI.Logic.Utils
         public static TimeSpan Duration = DateTime.Now - InitSessionDateTime;
 
         public static int KeptPokemon;
+        public static bool HasUI = false;
+        public static Form window;
 
         public static async Task<string> _getcurrentLevelInfos(Inventory inventory)
         {
@@ -188,8 +191,21 @@ namespace PokemonGo.RocketAPI.Logic.Utils
 
         public async void UpdateConsoleTitle(Inventory inventory)
         {
-            CurrentLevelInfos = await _getcurrentLevelInfos(inventory);
-            Console.Title = ToString();
+            CurrentLevelInfos = await _getcurrentLevelInfos(inventory);           
+
+            if(HasUI)
+            {
+                window.Invoke(new MethodInvoker(delegate
+                {
+
+                    window.Text = CurrentLevelInfos;
+                    window.Update();
+                }));
+            }
+            else
+            {
+                Console.Title = CurrentLevelInfos;
+            }            
         }
     }
 }
