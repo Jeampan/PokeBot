@@ -36,7 +36,7 @@
             // 
             // image
             // 
-            this.image.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.image.BackColor = System.Drawing.Color.Transparent;
             this.image.Location = new System.Drawing.Point(0, 0);
             this.image.Name = "image";
             this.image.Size = new System.Drawing.Size(60, 60);
@@ -50,7 +50,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCP.BackColor = System.Drawing.Color.Transparent;
             this.lblCP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCP.Location = new System.Drawing.Point(0, 41);
+            this.lblCP.Location = new System.Drawing.Point(1, 42);
             this.lblCP.Name = "lblCP";
             this.lblCP.Size = new System.Drawing.Size(57, 19);
             this.lblCP.TabIndex = 1;
@@ -64,7 +64,7 @@
             this.lblPercent.BackColor = System.Drawing.Color.Transparent;
             this.lblPercent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPercent.ForeColor = System.Drawing.Color.Brown;
-            this.lblPercent.Location = new System.Drawing.Point(5, 2);
+            this.lblPercent.Location = new System.Drawing.Point(5, 1);
             this.lblPercent.Name = "lblPercent";
             this.lblPercent.Size = new System.Drawing.Size(55, 19);
             this.lblPercent.TabIndex = 2;

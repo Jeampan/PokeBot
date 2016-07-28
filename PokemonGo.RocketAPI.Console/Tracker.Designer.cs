@@ -37,9 +37,9 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.trackBar1 = new System.Windows.Forms.TrackBar();
             this.gMapControl1 = new GMap.NET.WindowsForms.GMapControl();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.trackBar1 = new System.Windows.Forms.TrackBar();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -61,7 +61,6 @@
             // splitContainer1.Panel1
             // 
             this.splitContainer1.Panel1.Controls.Add(this.summaryPanel);
-            this.splitContainer1.Panel1.Controls.Add(this.trackBar1);
             this.splitContainer1.Panel1.Controls.Add(this.gMapControl1);
             // 
             // splitContainer1.Panel2
@@ -73,24 +72,26 @@
             // 
             // summaryPanel
             // 
-            this.summaryPanel.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.summaryPanel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.summaryPanel.BackColor = System.Drawing.Color.Transparent;
+            this.summaryPanel.Controls.Add(this.trackBar1);
             this.summaryPanel.Controls.Add(this.lblUltra);
             this.summaryPanel.Controls.Add(this.lblGreat);
             this.summaryPanel.Controls.Add(this.lblPoke);
             this.summaryPanel.Controls.Add(this.pictureBox3);
             this.summaryPanel.Controls.Add(this.pictureBox2);
             this.summaryPanel.Controls.Add(this.pictureBox1);
-            this.summaryPanel.Location = new System.Drawing.Point(3, 247);
+            this.summaryPanel.Location = new System.Drawing.Point(0, 247);
             this.summaryPanel.Name = "summaryPanel";
-            this.summaryPanel.Size = new System.Drawing.Size(660, 64);
+            this.summaryPanel.Size = new System.Drawing.Size(784, 64);
             this.summaryPanel.TabIndex = 9;
             // 
             // lblUltra
             // 
+            this.lblUltra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblUltra.AutoSize = true;
-            this.lblUltra.Location = new System.Drawing.Point(587, 40);
+            this.lblUltra.Location = new System.Drawing.Point(568, 40);
             this.lblUltra.Name = "lblUltra";
             this.lblUltra.Size = new System.Drawing.Size(25, 13);
             this.lblUltra.TabIndex = 14;
@@ -99,8 +100,9 @@
             // 
             // lblGreat
             // 
+            this.lblGreat.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblGreat.AutoSize = true;
-            this.lblGreat.Location = new System.Drawing.Point(505, 40);
+            this.lblGreat.Location = new System.Drawing.Point(486, 40);
             this.lblGreat.Name = "lblGreat";
             this.lblGreat.Size = new System.Drawing.Size(25, 13);
             this.lblGreat.TabIndex = 13;
@@ -109,8 +111,9 @@
             // 
             // lblPoke
             // 
+            this.lblPoke.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lblPoke.AutoSize = true;
-            this.lblPoke.Location = new System.Drawing.Point(425, 40);
+            this.lblPoke.Location = new System.Drawing.Point(406, 40);
             this.lblPoke.Name = "lblPoke";
             this.lblPoke.Size = new System.Drawing.Size(25, 13);
             this.lblPoke.TabIndex = 12;
@@ -119,8 +122,9 @@
             // 
             // pictureBox3
             // 
+            this.pictureBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
-            this.pictureBox3.Location = new System.Drawing.Point(456, 29);
+            this.pictureBox3.Location = new System.Drawing.Point(437, 29);
             this.pictureBox3.Name = "pictureBox3";
             this.pictureBox3.Size = new System.Drawing.Size(33, 33);
             this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -129,8 +133,9 @@
             // 
             // pictureBox2
             // 
+            this.pictureBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox2.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox2.Image")));
-            this.pictureBox2.Location = new System.Drawing.Point(536, 29);
+            this.pictureBox2.Location = new System.Drawing.Point(517, 29);
             this.pictureBox2.Name = "pictureBox2";
             this.pictureBox2.Size = new System.Drawing.Size(35, 33);
             this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -139,28 +144,22 @@
             // 
             // pictureBox1
             // 
+            this.pictureBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
-            this.pictureBox1.Location = new System.Drawing.Point(618, 29);
+            this.pictureBox1.Location = new System.Drawing.Point(599, 29);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(35, 33);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 9;
             this.pictureBox1.TabStop = false;
             // 
-            // trackBar1
-            // 
-            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.trackBar1.Location = new System.Drawing.Point(658, 266);
-            this.trackBar1.Name = "trackBar1";
-            this.trackBar1.Size = new System.Drawing.Size(126, 45);
-            this.trackBar1.TabIndex = 2;
-            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
-            // 
             // gMapControl1
             // 
+            this.gMapControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.gMapControl1.Bearing = 0F;
             this.gMapControl1.CanDragMap = true;
-            this.gMapControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.gMapControl1.EmptyTileColor = System.Drawing.Color.Navy;
             this.gMapControl1.GrayScaleMode = false;
             this.gMapControl1.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
@@ -194,6 +193,15 @@
             this.richTextBox1.TabIndex = 3;
             this.richTextBox1.Text = "";
             // 
+            // trackBar1
+            // 
+            this.trackBar1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.trackBar1.Location = new System.Drawing.Point(659, 17);
+            this.trackBar1.Name = "trackBar1";
+            this.trackBar1.Size = new System.Drawing.Size(126, 45);
+            this.trackBar1.TabIndex = 15;
+            this.trackBar1.Scroll += new System.EventHandler(this.trackBar1_Scroll);
+            // 
             // Tracker
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -204,7 +212,6 @@
             this.Name = "Tracker";
             this.Text = "Tracker";
             this.splitContainer1.Panel1.ResumeLayout(false);
-            this.splitContainer1.Panel1.PerformLayout();
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
@@ -221,7 +228,6 @@
         #endregion
 
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.TrackBar trackBar1;
         private GMap.NET.WindowsForms.GMapControl gMapControl1;
         private System.Windows.Forms.RichTextBox richTextBox1;
         private System.Windows.Forms.Panel summaryPanel;
@@ -231,5 +237,6 @@
         private System.Windows.Forms.PictureBox pictureBox3;
         private System.Windows.Forms.PictureBox pictureBox2;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TrackBar trackBar1;
     }
 }

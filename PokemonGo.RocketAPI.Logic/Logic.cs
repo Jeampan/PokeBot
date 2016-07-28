@@ -34,12 +34,14 @@ namespace PokemonGo.RocketAPI.Logic
         private Narrator _narrator;
         private List<PokemonData> _caughtInSession;
         private Panel _summary;
+        private GMapControl _map;
 
         public Logic(ISettings clientSettings, GMapControl map, Panel summary)
         {
             _clientSettings = clientSettings;
             ResetCoords();
             _client = new Client(_clientSettings, map);
+            _map = map;
             _summary = summary;
             _inventory = new Inventory(_client);
             _navigation = new Navigation(_client);
@@ -151,6 +153,32 @@ namespace PokemonGo.RocketAPI.Logic
                         _caughtInSession.Add(encounter.WildPokemon?.PokemonData);
                         _narrator.Speak($"{pokemon.PokemonId}, {encounter.WildPokemon?.PokemonData?.Cp}");
                         Statistics.KeptPokemon++;
+
+                        _map.Invoke(new MethodInvoker(delegate () {
+
+                            var pokemonOverlay = _map.Overlays[3];
+                            var foundIndex = -1;
+
+                            for (int i = 0; i < pokemonOverlay.Markers.Count; i++)
+                            {
+                                var marker = pokemonOverlay.Markers[i];
+
+                                if (marker.Position.Lat == Math.Round(encounter.WildPokemon.Latitude, 12)
+                                && marker.Position.Lng == Math.Round(encounter.WildPokemon.Longitude, 12))
+                                {
+                                    foundIndex = i;
+                                    break;
+                                }
+                            }
+
+                            if (foundIndex > -1)
+                            {
+                                var position = pokemonOverlay.Markers[foundIndex].Position;
+                                _client.CaughtMarkers.Add((int)pokemon.PokemonId, position);
+                                pokemonOverlay.Markers.RemoveAt(foundIndex);
+                            }                            
+
+                        }));
                     }
 
                 }
@@ -190,6 +218,7 @@ namespace PokemonGo.RocketAPI.Logic
             Logger.Write("=====================", LogLevel.Info, ConsoleColor.DarkYellow);
 
             var highestsPokemonPercent = await _inventory.GetHighestsPerfect(1, _caughtInSession);
+            var highestsPokemonCP = await _inventory.GetHighestsCp(1, _caughtInSession);
 
             _summary.Invoke(new MethodInvoker(delegate 
             { 
@@ -208,7 +237,29 @@ namespace PokemonGo.RocketAPI.Logic
                     string location = Sprites + (int)pokemon.PokemonId + ".png";
                     Bitmap image = (Bitmap)Image.FromFile(location);
 
-                    var icon = new PokemonSummary(image, pokemon.Cp + " CP", pokemon.CalculateIV() + "%");
+                    var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(),1) + "%");
+
+                    foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
+                    {
+                        _summary.Controls.Remove(summary);
+                    }
+                  
+                    _summary.Controls.Add(icon);
+
+                }
+
+                foreach (var pokemon in highestsPokemonCP)
+                {
+                    var Sprites = AppDomain.CurrentDomain.BaseDirectory + "Sprites\\";
+                    string location = Sprites + (int)pokemon.PokemonId + ".png";
+                    Bitmap image = (Bitmap)Image.FromFile(location);
+
+                    var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(), 1) + "%");
+
+                    foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
+                    {
+                        _summary.Controls.Remove(summary);
+                    }
 
                     _summary.Controls.Add(icon);
 

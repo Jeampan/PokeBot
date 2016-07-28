@@ -62,7 +62,7 @@ namespace PokemonGo.RocketAPI.Console
             gMapControl1.DragButton = MouseButtons.Left;
             gMapControl1.MarkersEnabled = true;
 
-            gMapControl1.CenterPen = new Pen(Color.Red, 2);
+            gMapControl1.CenterPen = new Pen(Color.Transparent, 2);
             gMapControl1.MinZoom = trackBar1.Maximum = 1;
             gMapControl1.MaxZoom = trackBar1.Maximum = 20;
             trackBar1.Value = 15;
@@ -71,8 +71,18 @@ namespace PokemonGo.RocketAPI.Console
             gMapControl1.Zoom = trackBar1.Value;
 
             GMapOverlay userOverlay = new GMapOverlay("user");
-            GMarkerGoogle user = new GMarkerGoogle(start,
-            GMarkerGoogleType.yellow_small);
+            Bitmap userBitmap = new Bitmap(12, 12);
+            
+                using (Graphics g = Graphics.FromImage(userBitmap))
+                {
+                    using (Brush b = new SolidBrush(Color.Goldenrod))
+                    {
+                        g.FillEllipse(b, 0, 0, 12, 12);
+                    }
+                }
+
+
+            GMarkerGoogle user = new GMarkerGoogle(start, userBitmap);
             userOverlay.Markers.Add(user);
 
             GMapOverlay startOverlay = new GMapOverlay("start");

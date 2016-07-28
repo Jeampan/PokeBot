@@ -16,6 +16,8 @@ using static PokemonGo.RocketAPI.GeneratedCode.Response.Types;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using System.Windows.Forms;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
 
 #endregion
 
@@ -31,6 +33,8 @@ namespace PokemonGo.RocketAPI
         private GMapControl _map;
 
         private static object _lock = new object();
+
+        public  Dictionary<int, GMap.NET.PointLatLng> CaughtMarkers = new Dictionary<int, GMap.NET.PointLatLng>();
 
         public Client(ISettings settings, GMapControl map)
         {
@@ -301,7 +305,7 @@ namespace PokemonGo.RocketAPI
                      var mapPointOverlay = _map.Overlays[2];
                      mapPointOverlay.Markers.Clear();
                      var pokemonOverlay = _map.Overlays[3];
-                     pokemonOverlay.Markers.Clear();
+                     
 
                      foreach (var mapPoint in response.MapCells)
                      {
@@ -314,17 +318,74 @@ namespace PokemonGo.RocketAPI
                              }
                          }
 
-                         foreach (var pokemon in mapPoint.WildPokemons)
-                         {
-                             pokemonOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(pokemon.Latitude, pokemon.Longitude),
-                         Images.GetPokemonImage((int)pokemon.PokemonData.PokemonId)));
-                         }
+                         GetPokemonFromPokeVision(pokemonOverlay);
+
+                         //foreach (var pokemon in mapPoint.WildPokemons)
+                         //{
+                         //    pokemonOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(pokemon.Latitude, pokemon.Longitude),
+                         //Images.GetPokemonImage((int)pokemon.PokemonData.PokemonId)));
+                         //}
 
                      }
                  }));
             }         
 
             return response;
+        }
+
+        public async void GetPokemonFromPokeVision(GMapOverlay overlay)
+        {
+            try
+            {
+                var request = await this._httpClient.GetAsync("https://pokevision.com/map/scan/" + CurrentLat + "/" + CurrentLng);
+                var response = request.Content.ReadAsStringAsync().Result;                
+
+                var parser = JObject.Parse(response);
+
+                if(parser["status"].ToString() != "success")
+                {
+                    return;
+                }
+
+                overlay.Markers.Clear();
+
+                var jobId = parser["jobId"];
+                var dataUrl = "https://pokevision.com/map/data/" + CurrentLat + "/" + CurrentLng + "/" + jobId;
+
+                var data = await this._httpClient.GetAsync(dataUrl);
+                var dataresponse = data.Content.ReadAsStringAsync().Result;
+
+                var result = JObject.Parse(dataresponse);
+
+                JArray pokemon = (JArray)result["pokemon"];
+
+                foreach (var item in pokemon)
+                {
+                    var position = new GMap.NET.PointLatLng((double)item["latitude"], (double)item["longitude"]);
+                    var existingPosition = new GMap.NET.PointLatLng();
+                    var pokemonId = (int)item["pokemonId"];
+                    if (CaughtMarkers.TryGetValue((int)item["pokemonId"], out existingPosition))
+                    {
+                        if(position == existingPosition)
+                        {
+                            continue;
+                        }
+                    }
+
+                    overlay.Markers.Add(new GMarkerGoogle(position,
+                    Images.GetPokemonImage(pokemonId)));
+                    
+                }
+
+            }
+            catch (Exception)
+            {
+
+               // throw;
+            }
+
+           
+
         }
 
         public async Task<GetPlayerResponse> GetProfile()
