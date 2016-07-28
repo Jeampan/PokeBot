@@ -42,6 +42,8 @@ namespace PokemonGo.RocketAPI.Console
         public float EvolveAboveIVValue => UserSettings.Default.EvolveAboveIVValue;
         public bool RecycleItems => UserSettings.Default.RecycleItems;
 
+        public bool PurePokemonMode => UserSettings.Default.PurePokemonMode;
+
         public bool DontCatchPokemon
         {
             get { return UserSettings.Default.DontCatchPokemon; }

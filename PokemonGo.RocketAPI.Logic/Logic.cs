@@ -233,6 +233,10 @@ namespace PokemonGo.RocketAPI.Logic
             ultralabel.Text = ultraballs.ToString();
 
                 var offset = 0;
+                foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
+                {
+                    _summary.Controls.Remove(summary);
+                }
 
                 foreach (var pokemon in highestsPokemonPercent)
                 {
@@ -243,11 +247,6 @@ namespace PokemonGo.RocketAPI.Logic
                     var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(),1) + "%");
                     icon.Location = new Point(offset, 0);
                     offset += icon.Width;
-
-                    foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
-                    {
-                        _summary.Controls.Remove(summary);
-                    }
                   
                     _summary.Controls.Add(icon);
 
@@ -262,11 +261,6 @@ namespace PokemonGo.RocketAPI.Logic
                     var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(), 1) + "%");
                     icon.Location = new Point(offset, 0);
                     offset += icon.Width;
-
-                    foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
-                    {
-                        _summary.Controls.Remove(summary);
-                    }
 
                     _summary.Controls.Add(icon);
 
@@ -401,7 +395,16 @@ namespace PokemonGo.RocketAPI.Logic
         private async Task ExecuteFarmingPokestopsAndPokemons(bool path)
         {
             if (!path)
-                await ExecuteFarmingPokestopsAndPokemons();
+            {
+                if (_clientSettings.PurePokemonMode)
+                {
+                    await ExecutePurePokemonMode();
+                }
+                else
+                {
+                    await ExecuteFarmingPokestopsAndPokemons();
+                }
+            }
             else
             {
                 var tracks = GetGpxTracks();
@@ -480,9 +483,9 @@ namespace PokemonGo.RocketAPI.Logic
                                 if (_clientSettings.TransferDuplicatePokemon) await TransferDuplicatePokemon();
                             }
 
-                                await
-                                    _navigation.HumanPathWalking(trackPoints.ElementAt(curTrkPt),
-                                        _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+                            await
+                                _navigation.HumanPathWalking(trackPoints.ElementAt(curTrkPt),
+                                    _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
 
                             if (curTrkPt >= maxTrkPt)
                                 curTrkPt = 0;
@@ -503,7 +506,7 @@ namespace PokemonGo.RocketAPI.Logic
         }
 
         private async Task ExecuteFarmingPokestopsAndPokemons()
-        {
+        {          
             var distanceFromStart = LocationUtils.CalculateDistanceInMeters(
                 _clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude,
                 _client.CurrentLat, _client.CurrentLng);
@@ -607,6 +610,93 @@ namespace PokemonGo.RocketAPI.Logic
             }
         }
 
+        private async Task ExecutePurePokemonMode()
+        {
+            var distanceFromStart = LocationUtils.CalculateDistanceInMeters(
+                _clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude,
+                _client.CurrentLat, _client.CurrentLng);
+
+            // Edge case for when the client somehow ends up outside the defined radius
+            if (_clientSettings.MaxTravelDistanceInMeters != 0 &&
+                distanceFromStart > _clientSettings.MaxTravelDistanceInMeters)
+            {
+                Logger.Write(
+                    $"You're outside of your defined radius! Walking to start ({distanceFromStart}m away) in 5 seconds. Is your Coords.ini file correct?",
+                    LogLevel.Warning);
+                await Task.Delay(5000);
+                Logger.Write("Moving to start location now.");
+                await _navigation.HumanLikeWalking(
+                    new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude),
+                    _clientSettings.WalkingSpeedInKilometerPerHour, null);
+            }
+
+            var mapObjects = await _client.GetMapObjects();
+
+            // Wasn't sure how to make this pretty. Edit as needed.
+            var spawnPoints =
+                mapObjects.MapCells.SelectMany(i => i.SpawnPoints)
+                    .Where(
+                        i =>
+                            ( // Make sure PokeStop is within max travel distance, unless it's set to 0.
+                                LocationUtils.CalculateDistanceInMeters(
+                                    _clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude,
+                                    i.Latitude, i.Longitude) < _clientSettings.MaxTravelDistanceInMeters) ||
+                            _clientSettings.MaxTravelDistanceInMeters == 0
+                    );
+
+            var spawnPointList = spawnPoints.ToList();
+            var stopsHit = 0;
+
+            if (spawnPointList.Count <= 0)
+            {
+                Logger.Write("No spawn points found in your area. Is your maximum distance too small?",
+                    LogLevel.Warning);
+
+                await ExecuteCatchAllNearbyPokemons();
+
+                var bearing = _client.CurrentLat > _clientSettings.DefaultLatitude ? 180 : 0;
+                var direction = bearing == 180 ? "south" : "north";
+
+                Logger.Write($"Heading {direction} to look for pokemon",
+                        LogLevel.Warning);
+
+                await _navigation.HumanLikeWalking(
+                       LocationUtils.CreateWaypoint(new GeoCoordinate(_clientSettings.DefaultLatitude, _clientSettings.DefaultLongitude), _clientSettings.MaxTravelDistanceInMeters, bearing),
+                       _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+            }
+            while (spawnPointList.Any())
+            {
+                //resort
+                spawnPointList =
+                    spawnPointList.OrderBy(
+                        i =>
+                            LocationUtils.CalculateDistanceInMeters(_client.CurrentLat, _client.CurrentLng, i.Latitude,
+                                i.Longitude)).ToList();
+                var spawnPoint = spawnPointList[0];
+                spawnPointList.RemoveAt(0);
+
+                var distance = LocationUtils.CalculateDistanceInMeters(_client.CurrentLat, _client.CurrentLng,
+                    spawnPoint.Latitude, spawnPoint.Longitude);             
+
+                Logger.Write($"Spawn point in ({Math.Round(distance)}m)", LogLevel.Info, ConsoleColor.DarkCyan);
+                await
+                    _navigation.HumanLikeWalking(new GeoCoordinate(spawnPoint.Latitude, spawnPoint.Longitude),
+                        _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
+
+                await ExecuteCatchAllNearbyPokemons();
+
+                await Task.Delay(1000);
+
+                if (++stopsHit % 5 == 0) //TODO: OR item/pokemon bag is full
+                {
+                    stopsHit = 0;
+                    await RecycleItems();
+                    if (_clientSettings.EvolveAllPokemonWithEnoughCandy || _clientSettings.EvolveAllPokemonAboveIV)
+                        await EvolveAllPokemonWithEnoughCandy(_clientSettings.PokemonsToEvolve);
+                    if (_clientSettings.TransferDuplicatePokemon) await TransferDuplicatePokemon();
+                }
+            }
+        }
 
         private async Task<MiscEnums.Item> GetBestBall(EncounterResponse encounter)
         {

@@ -205,7 +205,7 @@ namespace PokemonGo.RocketAPI.Console {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("700")]
+        [global::System.Configuration.DefaultSettingValueAttribute("400")]
         public int MaxTravelDistanceInMeters {
             get {
                 return ((int)(this["MaxTravelDistanceInMeters"]));
@@ -332,6 +332,18 @@ namespace PokemonGo.RocketAPI.Console {
             }
             set {
                 this["OnlyTransferDuplicateShit"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool PurePokemonMode {
+            get {
+                return ((bool)(this["PurePokemonMode"]));
+            }
+            set {
+                this["PurePokemonMode"] = value;
             }
         }
     }

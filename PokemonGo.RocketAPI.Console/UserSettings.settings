@@ -48,7 +48,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="MaxTravelDistanceInMeters" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">700</Value>
+      <Value Profile="(Default)">400</Value>
     </Setting>
     <Setting Name="UseGPXPathing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -78,6 +78,9 @@
       <Value Profile="(Default)">-2</Value>
     </Setting>
     <Setting Name="OnlyTransferDuplicateShit" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="PurePokemonMode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>

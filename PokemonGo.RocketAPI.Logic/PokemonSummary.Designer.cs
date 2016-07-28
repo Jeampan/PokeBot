@@ -50,9 +50,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lblCP.BackColor = System.Drawing.Color.Transparent;
             this.lblCP.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblCP.Location = new System.Drawing.Point(1, 42);
+            this.lblCP.Location = new System.Drawing.Point(63, 31);
             this.lblCP.Name = "lblCP";
-            this.lblCP.Size = new System.Drawing.Size(57, 19);
+            this.lblCP.Size = new System.Drawing.Size(54, 19);
             this.lblCP.TabIndex = 1;
             this.lblCP.Text = "label1";
             this.lblCP.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -64,12 +64,12 @@
             this.lblPercent.BackColor = System.Drawing.Color.Transparent;
             this.lblPercent.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.lblPercent.ForeColor = System.Drawing.Color.Brown;
-            this.lblPercent.Location = new System.Drawing.Point(5, 1);
+            this.lblPercent.Location = new System.Drawing.Point(63, 12);
             this.lblPercent.Name = "lblPercent";
-            this.lblPercent.Size = new System.Drawing.Size(55, 19);
+            this.lblPercent.Size = new System.Drawing.Size(54, 19);
             this.lblPercent.TabIndex = 2;
             this.lblPercent.Text = "label1";
-            this.lblPercent.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.lblPercent.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // PokemonSummary
             // 
@@ -79,7 +79,7 @@
             this.Controls.Add(this.lblCP);
             this.Controls.Add(this.image);
             this.Name = "PokemonSummary";
-            this.Size = new System.Drawing.Size(60, 60);
+            this.Size = new System.Drawing.Size(120, 60);
             ((System.ComponentModel.ISupportInitialize)(this.image)).EndInit();
             this.ResumeLayout(false);
 

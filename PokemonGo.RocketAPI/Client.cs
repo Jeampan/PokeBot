@@ -309,14 +309,26 @@ namespace PokemonGo.RocketAPI
 
                      foreach (var mapPoint in response.MapCells)
                      {
-                         foreach (var fort in mapPoint.Forts)
+                         if(Settings.PurePokemonMode)
                          {
-                             if (fort.Type == FortType.Checkpoint)
+                             foreach (var spawn in mapPoint.SpawnPoints)
                              {
-                                 mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(fort.Latitude, fort.Longitude),
-                         GMarkerGoogleType.blue_small));
+                                     mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(spawn.Latitude, spawn.Longitude),
+                             GMarkerGoogleType.brown_small));                               
                              }
                          }
+                         else
+                         {
+                             foreach (var fort in mapPoint.Forts)
+                             {
+                                 if (fort.Type == FortType.Checkpoint)
+                                 {
+                                     mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(fort.Latitude, fort.Longitude),
+                             GMarkerGoogleType.blue_small));
+                                 }
+                             }
+                         }
+                         
 
                          GetPokemonFromPokeVision(pokemonOverlay);
 

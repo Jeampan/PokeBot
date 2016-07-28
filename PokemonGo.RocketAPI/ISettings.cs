@@ -46,5 +46,7 @@ namespace PokemonGo.RocketAPI
         ICollection<PokemonId> PokemonsNotToCatch { get; }
         ICollection<PokemonId> ShitPokemonsToTransfer { get; }
 
+        bool PurePokemonMode { get; }
+
     }
 }
