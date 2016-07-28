@@ -56,7 +56,6 @@ namespace PokemonGo.RocketAPI.Console
             var start = new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(longit));
             gMapControl1.Position = start;
 
-            //error onmousemove!
 
             //zoom min/max; default both = 2
             gMapControl1.DragButton = MouseButtons.Left;

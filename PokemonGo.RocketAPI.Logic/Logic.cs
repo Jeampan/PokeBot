@@ -163,18 +163,19 @@ namespace PokemonGo.RocketAPI.Logic
                             {
                                 var marker = pokemonOverlay.Markers[i];
 
-                                if (marker.Position.Lat == Math.Round(encounter.WildPokemon.Latitude, 12)
-                                && marker.Position.Lng == Math.Round(encounter.WildPokemon.Longitude, 12))
+                                if (Math.Round(marker.Position.Lat, 12) == Math.Round(encounter.WildPokemon.Latitude, 12)
+                                && (Math.Round(marker.Position.Lng, 12) == Math.Round(encounter.WildPokemon.Longitude, 12))
                                 {
                                     foundIndex = i;
                                     break;
                                 }
                             }
 
+                            _client.CaughtMarkers.Add((int)pokemon.PokemonId, position);
+
                             if (foundIndex > -1)
                             {
-                                var position = pokemonOverlay.Markers[foundIndex].Position;
-                                _client.CaughtMarkers.Add((int)pokemon.PokemonId, position);
+                                var position = pokemonOverlay.Markers[foundIndex].Position;                                
                                 pokemonOverlay.Markers.RemoveAt(foundIndex);
                             }                            
 
