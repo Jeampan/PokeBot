@@ -3,6 +3,7 @@ using GMap.NET.MapProviders;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using PokemonGo.RocketAPI.Exceptions;
+using PokemonGo.RocketAPI.Helpers;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -55,6 +56,8 @@ namespace PokemonGo.RocketAPI.Console
             var start = new PointLatLng(Convert.ToDouble(lat), Convert.ToDouble(longit));
             gMapControl1.Position = start;
 
+            //error onmousemove!
+
             //zoom min/max; default both = 2
             gMapControl1.DragButton = MouseButtons.Left;
             gMapControl1.MarkersEnabled = true;
@@ -77,10 +80,18 @@ namespace PokemonGo.RocketAPI.Console
             GMarkerGoogleType.gray_small);
             startOverlay.Markers.Add(startMarker);
 
-            GMapOverlay mapPointOverlay = new GMapOverlay("start");
+            GMapOverlay mapPointOverlay = new GMapOverlay("objects");
+            GMapOverlay pokemonOverlay = new GMapOverlay("pokemon");
 
+            GMapOverlay areaOverlay = new GMapOverlay("area");
+            //p_Settings.MaxTravelDistanceInMeters
+            var areaMarker = Marker.CreateCircle(start, p_Settings.MaxTravelDistanceInMeters, 32);
+            areaOverlay.Polygons.Add(areaMarker);
+
+            gMapControl1.Overlays.Add(areaOverlay);
             gMapControl1.Overlays.Add(startOverlay);
             gMapControl1.Overlays.Add(mapPointOverlay);
+            gMapControl1.Overlays.Add(pokemonOverlay);
             gMapControl1.Overlays.Add(userOverlay);
 
         }
@@ -93,7 +104,7 @@ namespace PokemonGo.RocketAPI.Console
             {
                 try
                 {
-                    new Logic.Logic(p_Settings, gMapControl1).Execute().Wait();
+                    new Logic.Logic(p_Settings, gMapControl1, summaryPanel).Execute().Wait();
                 }
                 catch (PtcOfflineException)
                 {
@@ -101,7 +112,7 @@ namespace PokemonGo.RocketAPI.Console
                         LogLevel.Error);
                     Logger.Write("Trying again in 20 seconds...");
                     Thread.Sleep(20000);
-                    new Logic.Logic(new Settings(), gMapControl1).Execute().Wait();
+                    new Logic.Logic(new Settings(), gMapControl1, summaryPanel).Execute().Wait();
                 }
                 catch (AccountNotVerifiedException)
                 {
@@ -111,12 +122,18 @@ namespace PokemonGo.RocketAPI.Console
                 catch (Exception ex)
                 {
                     Logger.Write($"Unhandled exception: {ex}", LogLevel.Error);
-                    new Logic.Logic(new Settings(), gMapControl1).Execute().Wait();
+                    new Logic.Logic(new Settings(), gMapControl1, summaryPanel).Execute().Wait();
                 }
             });
             System.Console.ReadLine();
 
         }
+
+        private void trackBar1_Scroll(object sender, EventArgs e)
+        {
+            gMapControl1.Zoom = trackBar1.Value;
+        }
+
     }
 
 }

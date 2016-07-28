@@ -45,6 +45,8 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Device" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -57,6 +59,12 @@
     <Compile Include="Inventory.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="Navigation.cs" />
+    <Compile Include="PokemonSummary.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PokemonSummary.Designer.cs">
+      <DependentUpon>PokemonSummary.cs</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utils\GPXReader.cs" />
     <Compile Include="Utils\LocationUtils.cs" />
@@ -74,6 +82,11 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PokemonSummary.resx">
+      <DependentUpon>PokemonSummary.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

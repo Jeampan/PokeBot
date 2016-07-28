@@ -15,6 +15,7 @@ using PokemonGo.RocketAPI.Login;
 using static PokemonGo.RocketAPI.GeneratedCode.Response.Types;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
+using System.Windows.Forms;
 
 #endregion
 
@@ -28,6 +29,8 @@ namespace PokemonGo.RocketAPI
         private Request.Types.UnknownAuth _unknownAuth;
         Random rand = null;
         private GMapControl _map;
+
+        private static object _lock = new object();
 
         public Client(ISettings settings, GMapControl map)
         {
@@ -291,27 +294,34 @@ namespace PokemonGo.RocketAPI
 
             var response = await _httpClient.PostProtoPayload<Request, GetMapObjectsResponse>($"https://{_apiUrl}/rpc", mapRequest);
 
-            var mapPointOverlay = _map.Overlays[1];
-            mapPointOverlay.Markers.Clear();
-
-            foreach (var mapPoint in response.MapCells)
+            lock (_lock)
             {
-                foreach (var fort in mapPoint.Forts)
-                {
-                    if (fort.Type == FortType.Checkpoint)
-                    {
-                        mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(fort.Latitude, fort.Longitude),
-                GMarkerGoogleType.blue));
-                    }
-                }
+                _map.Invoke(new MethodInvoker(delegate
+                 {
+                     var mapPointOverlay = _map.Overlays[2];
+                     mapPointOverlay.Markers.Clear();
+                     var pokemonOverlay = _map.Overlays[3];
+                     pokemonOverlay.Markers.Clear();
 
-                foreach (var pokemon in mapPoint.WildPokemons)
-                {
-                    mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(pokemon.Latitude, pokemon.Longitude),
-                GMarkerGoogleType.red));
-                }
+                     foreach (var mapPoint in response.MapCells)
+                     {
+                         foreach (var fort in mapPoint.Forts)
+                         {
+                             if (fort.Type == FortType.Checkpoint)
+                             {
+                                 mapPointOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(fort.Latitude, fort.Longitude),
+                         GMarkerGoogleType.blue_small));
+                             }
+                         }
 
+                         foreach (var pokemon in mapPoint.WildPokemons)
+                         {
+                             pokemonOverlay.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(pokemon.Latitude, pokemon.Longitude),
+                         Images.GetPokemonImage((int)pokemon.PokemonData.PokemonId)));
+                         }
 
+                     }
+                 }));
             }         
 
             return response;
@@ -492,9 +502,14 @@ namespace PokemonGo.RocketAPI
                 await
                     _httpClient.PostProtoPayload<Request, PlayerUpdateResponse>($"https://{_apiUrl}/rpc", updateRequest);
 
-            var userOverlay = _map.Overlays[2];
-            userOverlay.Markers[0].Position = new GMap.NET.PointLatLng(CurrentLat, CurrentLng);
+            lock (_lock)
+            {
+                _map.Invoke(new MethodInvoker(delegate {
 
+                    var userOverlay = _map.Overlays[4];
+                    userOverlay.Markers[0].Position = new GMap.NET.PointLatLng(CurrentLat, CurrentLng);
+                }));
+            }
             return updateResponse;
         }
 

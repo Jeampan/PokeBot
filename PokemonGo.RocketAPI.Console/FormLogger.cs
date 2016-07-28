@@ -107,7 +107,7 @@ namespace PokemonGo.RocketAPI.Console
             }
 
                     _textbox.ScrollToCaret();
-
+                   
                 }));
                 return;
             }

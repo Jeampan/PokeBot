@@ -16,6 +16,8 @@ using PokemonGo.RocketAPI.Logic.Utils;
 // ReSharper disable FunctionNeverReturns
 using System.IO;
 using GMap.NET.WindowsForms;
+using System.Windows.Forms;
+using System.Drawing;
 
 #endregion
 
@@ -31,12 +33,14 @@ namespace PokemonGo.RocketAPI.Logic
         private GetPlayerResponse _playerProfile;
         private Narrator _narrator;
         private List<PokemonData> _caughtInSession;
+        private Panel _summary;
 
-        public Logic(ISettings clientSettings, GMapControl map)
+        public Logic(ISettings clientSettings, GMapControl map, Panel summary)
         {
             _clientSettings = clientSettings;
             ResetCoords();
             _client = new Client(_clientSettings, map);
+            _summary = summary;
             _inventory = new Inventory(_client);
             _navigation = new Navigation(_client);
             _stats = new Statistics();
@@ -184,6 +188,33 @@ namespace PokemonGo.RocketAPI.Logic
             Logger.Write($"{pokeballs}-P, {greatballs}-G, {ultraballs}-U balls left || {Statistics.TotalPokemons} pokemon caught, {Statistics.KeptPokemon} kept", LogLevel.Info, ConsoleColor.DarkYellow);
             await DisplayHighest(3, _caughtInSession);
             Logger.Write("=====================", LogLevel.Info, ConsoleColor.DarkYellow);
+
+            var highestsPokemonPercent = await _inventory.GetHighestsPerfect(1, _caughtInSession);
+
+            _summary.Invoke(new MethodInvoker(delegate 
+            { 
+
+            var pokelabel = (Label)(_summary.Controls.Find("lblPoke", true)[0]);
+            var greatlabel = (Label)(_summary.Controls.Find("lblGreat", true)[0]);
+            var ultralabel = (Label)(_summary.Controls.Find("lblUltra", true)[0]);
+
+            pokelabel.Text = pokeballs.ToString();
+            greatlabel.Text = greatballs.ToString();
+            ultralabel.Text = ultraballs.ToString();
+
+                foreach (var pokemon in highestsPokemonPercent)
+                {
+                    var Sprites = AppDomain.CurrentDomain.BaseDirectory + "Sprites\\";
+                    string location = Sprites + (int)pokemon.PokemonId + ".png";
+                    Bitmap image = (Bitmap)Image.FromFile(location);
+
+                    var icon = new PokemonSummary(image, pokemon.Cp + " CP", pokemon.CalculateIV() + "%");
+
+                    _summary.Controls.Add(icon);
+
+                }
+
+            }));
         }
 
         private async Task EvolveAllPokemonWithEnoughCandy(IEnumerable<PokemonId> filter = null)
@@ -731,7 +762,7 @@ namespace PokemonGo.RocketAPI.Logic
 
                 TimerCallback callback = new TimerCallback(DisplaySummary);
 
-                var summaryTimer = new Timer(callback,null,120000,120000);
+                var summaryTimer = new System.Threading.Timer(callback,null,0,120000);
 
                 await ExecuteFarmingPokestopsAndPokemons(_clientSettings.UseGPXPathing);
 

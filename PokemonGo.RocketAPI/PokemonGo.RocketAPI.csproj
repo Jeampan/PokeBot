@@ -100,10 +100,12 @@
     <Compile Include="Helpers\Git.cs" />
     <Compile Include="Helpers\HttpClientHelper.cs" />
     <Compile Include="Helpers\JsonHelper.cs" />
+    <Compile Include="Helpers\Marker.cs" />
     <Compile Include="Helpers\ProtoHelper.cs" />
     <Compile Include="Helpers\RetryHandler.cs" />
     <Compile Include="Helpers\S2Helper.cs" />
     <Compile Include="Helpers\Utils.cs" />
+    <Compile Include="Images.cs" />
     <Compile Include="ISettings.cs" />
     <Compile Include="Logging\ILogger.cs" />
     <Compile Include="Logger.cs" />

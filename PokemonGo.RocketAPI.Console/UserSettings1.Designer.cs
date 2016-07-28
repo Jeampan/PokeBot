@@ -61,7 +61,7 @@ namespace PokemonGo.RocketAPI.Console {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("51.5043095")]
+        [global::System.Configuration.DefaultSettingValueAttribute("51.570586")]
         public double DefaultLatitude {
             get {
                 return ((double)(this["DefaultLatitude"]));
@@ -73,7 +73,7 @@ namespace PokemonGo.RocketAPI.Console {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("-0.0763759")]
+        [global::System.Configuration.DefaultSettingValueAttribute("-0.1272122")]
         public double DefaultLongitude {
             get {
                 return ((double)(this["DefaultLongitude"]));

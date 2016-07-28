@@ -33,7 +33,7 @@ namespace PokemonGo.RocketAPI.Console
                 {
                     try
                     {
-                        new Logic.Logic(new Settings(), null).Execute().Wait();
+                        new Logic.Logic(new Settings(), null, null).Execute().Wait();
                     }
                     catch (PtcOfflineException)
                     {
@@ -41,7 +41,7 @@ namespace PokemonGo.RocketAPI.Console
                             LogLevel.Error);
                         Logger.Write("Trying again in 20 seconds...");
                         Thread.Sleep(20000);
-                        new Logic.Logic(new Settings(), null).Execute().Wait();
+                        new Logic.Logic(new Settings(), null, null).Execute().Wait();
                     }
                     catch (AccountNotVerifiedException)
                     {
@@ -51,7 +51,7 @@ namespace PokemonGo.RocketAPI.Console
                     catch (Exception ex)
                     {
                         Logger.Write($"Unhandled exception: {ex}", LogLevel.Error);
-                        new Logic.Logic(new Settings(), null).Execute().Wait();
+                        new Logic.Logic(new Settings(), null, null).Execute().Wait();
                     }
                 });
                 System.Console.ReadLine();
