@@ -157,26 +157,26 @@ namespace PokemonGo.RocketAPI.Logic
                         _map.Invoke(new MethodInvoker(delegate () {
 
                             var pokemonOverlay = _map.Overlays[3];
-                            var foundIndex = -1;
+                            GMapMarker foundMarker = null;
 
                             for (int i = 0; i < pokemonOverlay.Markers.Count; i++)
                             {
                                 var marker = pokemonOverlay.Markers[i];
 
                                 if (Math.Round(marker.Position.Lat, 12) == Math.Round(encounter.WildPokemon.Latitude, 12)
-                                && (Math.Round(marker.Position.Lng, 12) == Math.Round(encounter.WildPokemon.Longitude, 12))
+                                && Math.Round(marker.Position.Lng, 12) == Math.Round(encounter.WildPokemon.Longitude, 12))
                                 {
-                                    foundIndex = i;
+                                    foundMarker = marker;
                                     break;
                                 }
                             }
 
-                            _client.CaughtMarkers.Add((int)pokemon.PokemonId, position);
+                            var position = new GMap.NET.PointLatLng(Math.Round(encounter.WildPokemon.Latitude, 12), Math.Round(encounter.WildPokemon.Longitude, 12));
+                            _client.CaughtMarkers.Add(new KeyValuePair<int, GMap.NET.PointLatLng>((int)pokemon.PokemonId, position));
 
-                            if (foundIndex > -1)
-                            {
-                                var position = pokemonOverlay.Markers[foundIndex].Position;                                
-                                pokemonOverlay.Markers.RemoveAt(foundIndex);
+                            if (foundMarker != null)
+                            {                                                            
+                                pokemonOverlay.Markers.Remove(foundMarker);
                             }                            
 
                         }));
@@ -232,6 +232,8 @@ namespace PokemonGo.RocketAPI.Logic
             greatlabel.Text = greatballs.ToString();
             ultralabel.Text = ultraballs.ToString();
 
+                var offset = 0;
+
                 foreach (var pokemon in highestsPokemonPercent)
                 {
                     var Sprites = AppDomain.CurrentDomain.BaseDirectory + "Sprites\\";
@@ -239,6 +241,8 @@ namespace PokemonGo.RocketAPI.Logic
                     Bitmap image = (Bitmap)Image.FromFile(location);
 
                     var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(),1) + "%");
+                    icon.Location = new Point(offset, 0);
+                    offset += icon.Width;
 
                     foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
                     {
@@ -256,6 +260,8 @@ namespace PokemonGo.RocketAPI.Logic
                     Bitmap image = (Bitmap)Image.FromFile(location);
 
                     var icon = new PokemonSummary(image, pokemon.Cp + " CP", Math.Round(pokemon.CalculateIV(), 1) + "%");
+                    icon.Location = new Point(offset, 0);
+                    offset += icon.Width;
 
                     foreach (var summary in _summary.Controls.OfType<PokemonSummary>())
                     {

@@ -34,7 +34,7 @@ namespace PokemonGo.RocketAPI
 
         private static object _lock = new object();
 
-        public  Dictionary<int, GMap.NET.PointLatLng> CaughtMarkers = new Dictionary<int, GMap.NET.PointLatLng>();
+        public  List<KeyValuePair<int, GMap.NET.PointLatLng>> CaughtMarkers = new List<KeyValuePair<int, GMap.NET.PointLatLng>>();
 
         public Client(ISettings settings, GMapControl map)
         {
@@ -347,29 +347,34 @@ namespace PokemonGo.RocketAPI
                     return;
                 }
 
-                overlay.Markers.Clear();
+                var result = new JObject();
 
-                var jobId = parser["jobId"];
-                var dataUrl = "https://pokevision.com/map/data/" + CurrentLat + "/" + CurrentLng + "/" + jobId;
+                do
+                {
 
-                var data = await this._httpClient.GetAsync(dataUrl);
-                var dataresponse = data.Content.ReadAsStringAsync().Result;
+                    var jobId = parser["jobId"];
+                    var dataUrl = "https://pokevision.com/map/data/" + CurrentLat + "/" + CurrentLng + "/" + jobId;
 
-                var result = JObject.Parse(dataresponse);
+                    var data = await this._httpClient.GetAsync(dataUrl);
+                    var dataresponse = data.Content.ReadAsStringAsync().Result;
+
+                    result = JObject.Parse(dataresponse);
+
+                } while (result["jobStatus"]?.ToString() == "in_progress");
+
 
                 JArray pokemon = (JArray)result["pokemon"];
+           
+                overlay.Markers.Clear();
 
                 foreach (var item in pokemon)
                 {
-                    var position = new GMap.NET.PointLatLng((double)item["latitude"], (double)item["longitude"]);
-                    var existingPosition = new GMap.NET.PointLatLng();
+                    var position = new GMap.NET.PointLatLng(Math.Round((double)item["latitude"], 12), Math.Round((double)item["longitude"], 12));
+
                     var pokemonId = (int)item["pokemonId"];
-                    if (CaughtMarkers.TryGetValue((int)item["pokemonId"], out existingPosition))
+                    if (CaughtMarkers.Contains(new KeyValuePair<int, GMap.NET.PointLatLng>((int)item["pokemonId"], position)))
                     {
-                        if(position == existingPosition)
-                        {
-                            continue;
-                        }
+                        continue;
                     }
 
                     overlay.Markers.Add(new GMarkerGoogle(position,
@@ -378,7 +383,7 @@ namespace PokemonGo.RocketAPI
                 }
 
             }
-            catch (Exception)
+            catch (Exception ex)
             {
 
                // throw;

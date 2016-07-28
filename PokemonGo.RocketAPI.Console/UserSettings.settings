@@ -12,10 +12,10 @@
       <Value Profile="(Default)">pw</Value>
     </Setting>
     <Setting Name="DefaultLatitude" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">51.570586</Value>
+      <Value Profile="(Default)">51.5008634</Value>
     </Setting>
     <Setting Name="DefaultLongitude" Type="System.Double" Scope="User">
-      <Value Profile="(Default)">-0.1272122</Value>
+      <Value Profile="(Default)">-0.0841007</Value>
     </Setting>
     <Setting Name="DefaultAltitude" Type="System.Double" Scope="User">
       <Value Profile="(Default)">10</Value>
@@ -48,7 +48,7 @@
       <Value Profile="(Default)">True</Value>
     </Setting>
     <Setting Name="MaxTravelDistanceInMeters" Type="System.Int32" Scope="User">
-      <Value Profile="(Default)">600</Value>
+      <Value Profile="(Default)">700</Value>
     </Setting>
     <Setting Name="UseGPXPathing" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
