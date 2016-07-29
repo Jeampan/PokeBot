@@ -118,15 +118,7 @@ namespace PokemonGo.RocketAPI.Logic
             }
             if (prioritizeIVoverCp)
             {
-                return pokemonList
-                    .GroupBy(p => p.PokemonId)
-                    .Where(x => x.Count() > 1)
-                    .SelectMany(
-                        p =>
-                            p.OrderByDescending(PokemonInfo.CalculatePokemonPerfection)
-                                .ThenBy(n => n.StaminaMax)
-                                .Skip(_client.Settings.KeepMinDuplicatePokemon)
-                                .ToList());
+                return pokemonList.GroupBy(p => p.PokemonId).Where(x => x.Count() > 1).SelectMany(p => p.OrderByDescending(PokemonInfo.CalculatePokemonPerfection).ThenBy(n => n.StaminaMax).Skip(_client.Settings.KeepMinDuplicatePokemon).ToList());
             }
             return pokemonList
                 .GroupBy(p => p.PokemonId)

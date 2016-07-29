@@ -26,15 +26,18 @@ namespace PokemonGo.RocketAPI.Console
         [DllImport("kernel32", SetLastError = true)]
         static extern bool AttachConsole(int dwProcessId);
 
+        private Settings _settings;
+        private Logic.Logic _logic;
+
         public Tracker()
         {
             InitializeComponent();
-            var settings = new Settings();
-            SetUpMap(settings);
+            _settings = new Settings();
+            SetUpMap(_settings);
             Logic.Utils.Statistics.HasUI = true;
             Logic.Utils.Statistics.window = this;
             AttachConsole(-1);
-            StartProgram(settings);
+            StartProgram(_settings);
         }
 
         private void SetUpMap(Settings p_Settings)
@@ -113,7 +116,8 @@ namespace PokemonGo.RocketAPI.Console
             {
                 try
                 {
-                    new Logic.Logic(p_Settings, gMapControl1, summaryPanel).Execute().Wait();
+                    _logic = new Logic.Logic(p_Settings, gMapControl1, summaryPanel);
+                    _logic.Execute().Wait();
                 }
                 catch (PtcOfflineException)
                 {
@@ -143,6 +147,20 @@ namespace PokemonGo.RocketAPI.Console
             gMapControl1.Zoom = trackBar1.Value;
         }
 
+        private async void gMapControl1_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        {
+            var result = MessageBox.Show("Do you want to move directly to this marker?", "Change Movement", MessageBoxButtons.YesNo);
+
+            if(result != DialogResult.Yes)
+            {
+                return;
+            }
+
+            var coord = new System.Device.Location.GeoCoordinate(item.Position.Lat, item.Position.Lng);
+            Logger.Write($"Walking to marker");
+
+            await _logic._navigation.HumanLikeWalking(coord, _settings.WalkingSpeedInKilometerPerHour, null, true);
+        }
     }
 
 }

@@ -5,6 +5,8 @@ using System.Device.Location;
 using System.Threading.Tasks;
 using PokemonGo.RocketAPI.GeneratedCode;
 using PokemonGo.RocketAPI.Logic.Utils;
+using System.Diagnostics;
+using System.Runtime.InteropServices;
 // ReSharper disable RedundantAssignment
 
 #endregion
@@ -13,6 +15,16 @@ namespace PokemonGo.RocketAPI.Logic
 {
     public class Navigation
     {
+        [DllImport("kernel32.dll")]
+        static extern IntPtr OpenThread(uint dwDesiredAccess, bool bInheritHandle, uint dwThreadId);
+
+        [DllImport("kernel32.dll")]
+        static extern uint SuspendThread(IntPtr hThread);
+
+        [DllImport("kernel32.dll")]
+        static extern uint GetCurrentThreadId();
+
+
         private const double SpeedDownTo = 10/3.6;
         private readonly Client _client;
 
@@ -22,7 +34,7 @@ namespace PokemonGo.RocketAPI.Logic
         }
 
         public async Task<PlayerUpdateResponse> HumanLikeWalking(GeoCoordinate targetLocation,
-            double walkingSpeedInKilometersPerHour, Func<Task> functionExecutedWhileWalking)
+            double walkingSpeedInKilometersPerHour, Func<Task> functionExecutedWhileWalking, bool PauseOtherMovement = false)
         {
             var speedInMetersPerSecond = walkingSpeedInKilometersPerHour/3.6;
 
@@ -33,6 +45,33 @@ namespace PokemonGo.RocketAPI.Logic
             var nextWaypointBearing = LocationUtils.DegreeBearing(sourceLocation, targetLocation);
             var nextWaypointDistance = speedInMetersPerSecond;
             var waypoint = LocationUtils.CreateWaypoint(sourceLocation, nextWaypointDistance, nextWaypointBearing);
+
+
+            //if(PauseOtherMovement)
+            //{
+            //    ProcessThreadCollection threads = Process.GetCurrentProcess().Threads;
+            //    var thisThread = GetCurrentThreadId();
+
+            //    foreach (ProcessThread thread in threads)
+            //    {
+            //        if(thread.Id != thisThread)
+            //        {
+            //            using(var handle = OpenThread((0x0002), false, (uint)thread.IdThreadAccess) ) // using block ensures finalizer closes handle
+            //            {
+            //                if (!handle.IsInvalid)
+            //                {
+            //                    SuspendThread(handle);
+            //                }
+            //            }
+            //        }
+
+
+            //    }
+
+
+
+            //}
+
 
             //Initial walking
             var requestSendDateTime = DateTime.Now;

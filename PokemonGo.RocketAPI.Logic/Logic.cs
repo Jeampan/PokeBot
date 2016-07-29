@@ -28,7 +28,7 @@ namespace PokemonGo.RocketAPI.Logic
         private readonly Client _client;
         private readonly ISettings _clientSettings;
         private readonly Inventory _inventory;
-        private readonly Navigation _navigation;
+        public readonly Navigation _navigation;
         private readonly Statistics _stats;
         private GetPlayerResponse _playerProfile;
         private Narrator _narrator;
@@ -565,6 +565,10 @@ namespace PokemonGo.RocketAPI.Logic
             while (pokestopList.Any())
             {
                 //resort
+                try
+                {
+
+
                 pokestopList =
                     pokestopList.OrderBy(
                         i =>
@@ -576,6 +580,8 @@ namespace PokemonGo.RocketAPI.Logic
 
                 var distance = LocationUtils.CalculateDistanceInMeters(_client.CurrentLat, _client.CurrentLng,
                     pokeStop.Latitude, pokeStop.Longitude);
+                
+
                 var fortInfo = await _client.GetFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
 
                 Logger.Write($"{fortInfo.Name} in ({Math.Round(distance)}m)", LogLevel.Info, ConsoleColor.DarkCyan);
@@ -583,19 +589,19 @@ namespace PokemonGo.RocketAPI.Logic
                         _navigation.HumanLikeWalking(new GeoCoordinate(pokeStop.Latitude, pokeStop.Longitude),
                             _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
 
-                var fortSearch = await _client.SearchFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
-                if (fortSearch.ExperienceAwarded > 0)
-                {
-                    _stats.AddExperience(fortSearch.ExperienceAwarded);
-                    _stats.UpdateConsoleTitle(_inventory);
-                    //todo: fix egg crash
+                //var fortSearch = await _client.SearchFort(pokeStop.Id, pokeStop.Latitude, pokeStop.Longitude);
+                //if (fortSearch.ExperienceAwarded > 0)
+                //{
+                //    _stats.AddExperience(fortSearch.ExperienceAwarded);
+                //    _stats.UpdateConsoleTitle(_inventory);
+                //    //todo: fix egg crash
 
-                    _narrator.Speak($"Arrived at {fortInfo.Name}");
+                //    _narrator.Speak($"Arrived at {fortInfo.Name}");
 
-                    Logger.Write(
-                        $"{fortInfo.Name} || XP: {fortSearch.ExperienceAwarded}, Eggs: {fortSearch.PokemonDataEgg}, Items: {StringUtils.GetSummedFriendlyNameOfItemAwardList(fortSearch.ItemsAwarded)}",
-                        LogLevel.Pokestop);
-                }
+                //    Logger.Write(
+                //        $"{fortInfo.Name} || XP: {fortSearch.ExperienceAwarded}, Eggs: {fortSearch.PokemonDataEgg}, Items: {StringUtils.GetSummedFriendlyNameOfItemAwardList(fortSearch.ItemsAwarded)}",
+                //        LogLevel.Pokestop);
+               // }
 
                 await Task.Delay(1000);
 
@@ -606,6 +612,11 @@ namespace PokemonGo.RocketAPI.Logic
                     if (_clientSettings.EvolveAllPokemonWithEnoughCandy || _clientSettings.EvolveAllPokemonAboveIV)
                         await EvolveAllPokemonWithEnoughCandy(_clientSettings.PokemonsToEvolve);
                     if (_clientSettings.TransferDuplicatePokemon) await TransferDuplicatePokemon();
+                }
+
+                }
+                catch (Exception ex)
+                {
                 }
             }
         }
@@ -678,7 +689,7 @@ namespace PokemonGo.RocketAPI.Logic
                 var distance = LocationUtils.CalculateDistanceInMeters(_client.CurrentLat, _client.CurrentLng,
                     spawnPoint.Latitude, spawnPoint.Longitude);             
 
-                Logger.Write($"Spawn point in ({Math.Round(distance)}m)", LogLevel.Info, ConsoleColor.DarkCyan);
+                //Logger.Write($"Spawn point in ({Math.Round(distance)}m)", LogLevel.Info, ConsoleColor.DarkCyan);
                 await
                     _navigation.HumanLikeWalking(new GeoCoordinate(spawnPoint.Latitude, spawnPoint.Longitude),
                         _clientSettings.WalkingSpeedInKilometerPerHour, ExecuteCatchAllNearbyPokemons);
@@ -963,6 +974,8 @@ namespace PokemonGo.RocketAPI.Logic
 
         private async Task TransferDuplicatePokemon(bool keepPokemonsThatCanEvolve = false)
         {
+            return;
+
             IEnumerable<PokemonData> duplicatePokemons;
 
             if (!_clientSettings.TransferDuplicatePokemon && !_clientSettings.OnlyTransferDuplicateShit)
