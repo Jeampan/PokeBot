@@ -1,8 +1,9 @@
 ﻿#region using directives
 
+using Google.Protobuf.Collections;
+using POGOProtos.Networking.Responses;
 using System.Collections.Generic;
 using System.Linq;
-using PokemonGo.RocketAPI.GeneratedCode;
 
 #endregion
 
@@ -10,9 +11,9 @@ namespace PokemonGo.RocketAPI.Logic.Utils
 {
     public static class StringUtils
     {
-        public static string GetSummedFriendlyNameOfItemAwardList(IEnumerable<FortSearchResponse.Types.ItemAward> items)
+        public static string GetSummedFriendlyNameOfItemAwardList(FortSearchResponse items)
         {
-            var enumerable = items as IList<FortSearchResponse.Types.ItemAward> ?? items.ToList();
+            var enumerable = items.ItemsAwarded as RepeatedField<POGOProtos.Inventory.Item.ItemAward>;
 
             if (!enumerable.Any())
                 return string.Empty;

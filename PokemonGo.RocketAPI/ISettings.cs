@@ -1,10 +1,7 @@
-﻿#region
-
-using System.Collections.Generic;
+﻿using POGOProtos.Enums;
+using POGOProtos.Inventory.Item;
 using PokemonGo.RocketAPI.Enums;
-using PokemonGo.RocketAPI.GeneratedCode;
-
-#endregion
+using System.Collections.Generic;
 
 namespace PokemonGo.RocketAPI
 {
@@ -14,8 +11,12 @@ namespace PokemonGo.RocketAPI
         double DefaultLatitude { get; }
         double DefaultLongitude { get; }
         double DefaultAltitude { get; }
-        string PtcPassword { get; }
-        string PtcUsername { get; }
+        //string GoogleRefreshToken { get; set; }
+        //string PtcPassword { get; set; }
+       // string PtcUsername { get; set; }
+        //string GoogleUsername { get; }
+        //string GooglePassword { get; }
+
         float KeepMinIVPercentage { get; }
         int KeepMinCP { get; }
         double WalkingSpeedInKilometerPerHour { get; }
@@ -32,6 +33,7 @@ namespace PokemonGo.RocketAPI
         bool EvolveAllPokemonAboveIV { get; }
         float EvolveAboveIVValue { get; }
         bool RecycleItems { get; }
+
         bool DontCatchPokemon { get; set; }
         int NarratorVolume { get; }
         int NarratorSpeed { get; }
@@ -47,6 +49,5 @@ namespace PokemonGo.RocketAPI
         ICollection<PokemonId> ShitPokemonsToTransfer { get; }
 
         bool PurePokemonMode { get; }
-
     }
 }

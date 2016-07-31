@@ -159,7 +159,16 @@ namespace PokemonGo.RocketAPI.Console
             var coord = new System.Device.Location.GeoCoordinate(item.Position.Lat, item.Position.Lng);
             Logger.Write($"Walking to marker");
 
-            await _logic._navigation.HumanLikeWalking(coord, _settings.WalkingSpeedInKilometerPerHour, null, true);
+            try
+            {
+                await _logic._navigation.HumanLikeWalking(coord, _settings.WalkingSpeedInKilometerPerHour, null, true);
+            }
+            catch (Exception ex)
+            {
+
+               
+            }
+            
         }
     }
 

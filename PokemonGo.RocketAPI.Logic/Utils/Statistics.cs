@@ -1,10 +1,11 @@
 ﻿#region using directives
 
+using POGOProtos.Networking.Responses;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using PokemonGo.RocketAPI.GeneratedCode;
+//using PokemonGo.RocketAPI.GeneratedCode;
 using System.Windows.Forms;
 // ReSharper disable CyclomaticComplexity
 
@@ -180,7 +181,7 @@ namespace PokemonGo.RocketAPI.Logic.Utils
 
         public void SetUsername(GetPlayerResponse profile)
         {
-            PlayerName = profile.Profile.Username ?? "";
+            PlayerName = profile.PlayerData.Username ?? "";
         }
 
         public override string ToString()

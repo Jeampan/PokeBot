@@ -4,8 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using PokemonGo.RocketAPI.Enums;
-using PokemonGo.RocketAPI.GeneratedCode;
+
 using System.Text.RegularExpressions;
+using POGOProtos.Enums;
+using POGOProtos.Inventory.Item;
 
 #endregion
 
@@ -20,8 +22,11 @@ namespace PokemonGo.RocketAPI.Console
         private ICollection<KeyValuePair<ItemId, int>> _itemRecycleFilter;
 
         public AuthType AuthType => (AuthType)Enum.Parse(typeof(AuthType), UserSettings.Default.AuthType, true);
-        public string PtcUsername => UserSettings.Default.PtcUsername;
-        public string PtcPassword => UserSettings.Default.PtcPassword;
+        //public string PtcUsername => UserSettings.Default.PtcUsername;
+        //public string PtcPassword => UserSettings.Default.PtcPassword;
+
+        //public string GoogleUsername => UserSettings.Default.GoogleUsername;
+
         public double DefaultLatitude => UserSettings.Default.DefaultLatitude;
         public double DefaultLongitude => UserSettings.Default.DefaultLongitude;
         public double DefaultAltitude => UserSettings.Default.DefaultAltitude;
